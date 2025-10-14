@@ -122,7 +122,7 @@ class MongoDBConversationService {
       updatedAt: message.timestamp,
       mode: 'gpt-4o-mini' as any, // Default mode for loaded conversations
       createdAt: message.timestamp,
-      parentId: index > 0 ? conversation.messages[index - 1].id : null,
+      parentId: index > 0 ? conversation.messages[index - 1].id : undefined,
     }));
 
     return { thread, threadItems };

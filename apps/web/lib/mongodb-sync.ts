@@ -1,5 +1,6 @@
 // MongoDB sync service for conversations
 import { Thread, ThreadItem } from '@repo/shared/types';
+import { ChatMode } from '@repo/shared/config';
 
 interface ConversationData {
   threadId: string;
@@ -120,7 +121,7 @@ class MongoDBConversationService {
       threadId: conversation.threadId,
       query: message.role === 'user' ? message.content : '', // User messages have query, assistant messages don't
       updatedAt: message.timestamp,
-      mode: 'gpt-4o-mini' as any, // Default mode for loaded conversations
+      mode: 'gpt-4o-mini' as ChatMode, // Default mode for loaded conversations
       createdAt: message.timestamp,
       parentId: index > 0 ? conversation.messages[index - 1].id : undefined,
     }));

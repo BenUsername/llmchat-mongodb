@@ -13,8 +13,11 @@ import { useAppStore } from './app.store';
 let mongoDBService: any = null;
 if (typeof window !== 'undefined') {
     // Dynamically import to avoid SSR issues
-    import('../../../apps/web/lib/mongodb-sync').then(module => {
+    import('../lib/mongodb-sync').then(module => {
         mongoDBService = module.mongoDBService;
+    }).catch(() => {
+        // Silently fail if mongodb-sync is not available
+        console.log('MongoDB sync service not available');
     });
 }
 

@@ -111,7 +111,7 @@ class MongoDBConversationService {
       title: conversation.title,
       createdAt: conversation.createdAt,
       pinned: false,
-      pinnedAt: null,
+      pinnedAt: new Date(), // Default to current date when not pinned
     };
 
     const threadItems: ThreadItem[] = conversation.messages.map((message, index) => ({

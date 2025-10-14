@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
         content: msg.content,
         timestamp: new Date(msg.timestamp || Date.now())
       })),
+      createdAt: existingConversation?.createdAt || new Date(),
       updatedAt: new Date(),
-      ...(existingConversation ? {} : { createdAt: new Date() })
     };
 
     if (existingConversation) {

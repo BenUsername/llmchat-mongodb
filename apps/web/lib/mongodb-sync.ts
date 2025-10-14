@@ -110,6 +110,7 @@ class MongoDBConversationService {
       id: conversation.threadId,
       title: conversation.title,
       createdAt: conversation.createdAt,
+      updatedAt: conversation.updatedAt,
       pinned: false,
       pinnedAt: new Date(), // Default to current date when not pinned
     };

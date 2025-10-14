@@ -33,8 +33,8 @@ class MongoDBConversationService {
         .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
         .map(item => ({
           id: item.id,
-          role: item.role as 'user' | 'assistant',
-          content: item.content,
+          role: (item.query ? 'user' : 'assistant') as 'user' | 'assistant', // Determine role based on whether it has a query
+          content: item.query || item.answer?.text || '', // User messages have query, assistant messages have answer
           timestamp: item.createdAt
         }));
 

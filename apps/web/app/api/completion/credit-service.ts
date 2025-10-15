@@ -8,6 +8,11 @@ const DAILY_CREDITS_IP = process.env.FREE_CREDITS_LIMIT_REQUESTS_IP
     ? parseInt(process.env.FREE_CREDITS_LIMIT_REQUESTS_IP)
     : 0;
 
+// Check if Redis/KV is available
+const isKvAvailable = () => {
+    return process.env.KV_URL && process.env.KV_REST_API_TOKEN;
+};
+
 // Lua scripts as named constants
 const GET_REMAINING_CREDITS_SCRIPT = `
 local key = KEYS[1]
@@ -66,6 +71,11 @@ async function getRemainingCreditsForUser(userId: string): Promise<number> {
         return 0;
     }
 
+    if (!isKvAvailable()) {
+        console.log('KV not available - returning default credits for user');
+        return DAILY_CREDITS_AUTH;
+    }
+
     try {
         const key = `credits:user:${userId}`;
         const lastRefillKey = `${key}:lastRefill`;
@@ -85,6 +95,11 @@ async function getRemainingCreditsForUser(userId: string): Promise<number> {
 async function getRemainingCreditsForIp(ip: string): Promise<number> {
     if (DAILY_CREDITS_IP === 0) {
         return 0;
+    }
+
+    if (!isKvAvailable()) {
+        console.log('KV not available - returning default credits for IP');
+        return DAILY_CREDITS_IP;
     }
 
     try {
@@ -116,6 +131,11 @@ export async function deductCredits(identifier: RequestIdentifier, cost: number)
 }
 
 async function deductCreditsFromUser(userId: string, cost: number): Promise<boolean> {
+    if (!isKvAvailable()) {
+        console.log('KV not available - allowing credit deduction for user');
+        return true;
+    }
+
     try {
         const key = `credits:user:${userId}`;
 
@@ -127,6 +147,11 @@ async function deductCreditsFromUser(userId: string, cost: number): Promise<bool
 }
 
 async function deductCreditsFromIp(ip: string, cost: number): Promise<boolean> {
+    if (!isKvAvailable()) {
+        console.log('KV not available - allowing credit deduction for IP');
+        return true;
+    }
+
     try {
         const key = `credits:ip:${ip}`;
 

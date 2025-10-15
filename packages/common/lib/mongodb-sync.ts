@@ -118,10 +118,11 @@ class MongoDBConversationService {
     const threadItems: ThreadItem[] = conversation.messages.map((message, index) => ({
       id: message.id,
       threadId: conversation.threadId,
-      role: message.role,
-      content: message.content,
+      query: message.role === 'user' ? message.content : '', // User messages have query, assistant messages don't
+      updatedAt: message.timestamp,
+      mode: 'gpt-4o-mini' as ChatMode, // Default mode for loaded conversations
       createdAt: message.timestamp,
-      parentId: index > 0 ? conversation.messages[index - 1].id : null,
+      parentId: index > 0 ? conversation.messages[index - 1].id : undefined,
     }));
 
     return { thread, threadItems };

@@ -15,9 +15,10 @@ if (typeof window !== 'undefined') {
     // Dynamically import to avoid SSR issues
     import('../lib/mongodb-sync').then(module => {
         mongoDBService = module.mongoDBService;
-    }).catch(() => {
+        console.log('✅ MongoDB sync service loaded successfully');
+    }).catch((error) => {
         // Silently fail if mongodb-sync is not available
-        console.log('MongoDB sync service not available');
+        console.log('❌ MongoDB sync service not available:', error);
     });
 }
 
@@ -737,11 +738,17 @@ export const useChatStore = create(
 
                 // Sync to MongoDB
                 if (mongoDBService) {
+                    console.log('🔄 MongoDB service available, attempting to sync conversation');
                     const currentThread = get().currentThread;
                     const currentThreadItems = get().threadItems.filter(item => item.threadId === threadId);
                     if (currentThread) {
+                        console.log('📝 Syncing thread:', currentThread.id, 'with', currentThreadItems.length, 'items');
                         mongoDBService.saveConversation(currentThread, currentThreadItems);
+                    } else {
+                        console.log('⚠️ No current thread found for MongoDB sync');
                     }
+                } else {
+                    console.log('❌ MongoDB service not available for sync');
                 }
 
                 // Notify other tabs

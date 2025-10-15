@@ -19,8 +19,8 @@ class MongoDBConversationService {
   private isEnabled: boolean = false;
 
   constructor() {
-    // Check if MongoDB is available (only in production or when MONGODB_URI is set)
-    this.isEnabled = typeof window === 'undefined' && !!process.env.MONGODB_URI;
+    // Check if MongoDB is available (client-side, will be enabled when MONGODB_URI is set on server)
+    this.isEnabled = typeof window !== 'undefined';
   }
 
   async saveConversation(thread: Thread, threadItems: ThreadItem[]): Promise<void> {
@@ -28,6 +28,8 @@ class MongoDBConversationService {
       console.log('MongoDB sync disabled - skipping save');
       return;
     }
+
+    console.log('🔄 Attempting to save conversation to MongoDB:', thread.id, 'with', threadItems.length, 'messages');
 
     try {
       const messages = threadItems

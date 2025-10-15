@@ -1,5 +1,6 @@
 // MongoDB sync service for conversations
 import { Thread, ThreadItem } from '@repo/shared/types';
+import { ChatMode } from '@repo/shared/config';
 
 interface ConversationData {
   threadId: string;
